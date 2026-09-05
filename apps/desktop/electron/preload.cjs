@@ -46,6 +46,17 @@ contextBridge.exposeInMainWorld('hermesDesktop', {
     set: name => ipcRenderer.invoke('hermes:profile:set', name)
   },
   api: request => ipcRenderer.invoke('hermes:api', request),
+  inferenceRegistry: {
+    list: () => ipcRenderer.invoke('hermes:inference-registry:list'),
+    install: manifestPath => ipcRenderer.invoke('hermes:inference-registry:install', manifestPath),
+    chooseManifest: () => ipcRenderer.invoke('hermes:inference-registry:choose-manifest'),
+    enable: (id, enabled) => ipcRenderer.invoke('hermes:inference-registry:enable', id, enabled),
+    selectAdapter: id => ipcRenderer.invoke('hermes:inference-registry:select-adapter', id),
+    selectModel: (adapterId, modelId) => ipcRenderer.invoke('hermes:inference-registry:select-model', adapterId, modelId),
+    activeRoute: () => ipcRenderer.invoke('hermes:inference-registry:active-route'),
+    remove: id => ipcRenderer.invoke('hermes:inference-registry:remove', id),
+    validate: (id, requested) => ipcRenderer.invoke('hermes:inference-registry:validate', id, requested)
+  },
   notify: payload => ipcRenderer.invoke('hermes:notify', payload),
   requestMicrophoneAccess: () => ipcRenderer.invoke('hermes:requestMicrophoneAccess'),
   readFileDataUrl: filePath => ipcRenderer.invoke('hermes:readFileDataUrl', filePath),

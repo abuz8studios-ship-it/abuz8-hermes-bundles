@@ -25,6 +25,7 @@ const path = require('node:path')
 const { pathToFileURL } = require('node:url')
 const { execFileSync, spawn } = require('node:child_process')
 const { installEmbedReferer } = require('./embed-referer.cjs')
+const { InferenceRegistry, builtinManifests } = require('./inference-registry.cjs')
 const { detectRemoteDisplay, isWindowsBinaryPathInWsl, isWslEnvironment } = require('./bootstrap-platform.cjs')
 const { runBootstrap } = require('./bootstrap-runner.cjs')
 const {
@@ -161,6 +162,17 @@ const IS_MAC = process.platform === 'darwin'
 const IS_WINDOWS = process.platform === 'win32'
 const IS_WSL = isWslEnvironment()
 const APP_ROOT = app.getAppPath()
+let hermesInferenceRegistry = null
+
+function getHermesInferenceRegistry() {
+  if (!hermesInferenceRegistry) {
+    hermesInferenceRegistry = new InferenceRegistry({
+      userDataDir: path.join(app.getPath('userData'), 'inference'),
+      builtins: builtinManifests({ llamaEndpoint: 'http://127.0.0.1:8001/v1' })
+    })
+  }
+  return hermesInferenceRegistry
+}
 
 function hiddenWindowsChildOptions(options = {}) {
   if (!IS_WINDOWS || Object.prototype.hasOwnProperty.call(options, 'windowsHide')) {
@@ -6015,6 +6027,25 @@ function createWindow() {
 }
 
 ipcMain.handle('hermes:connection', async (_event, profile) => ensureBackend(profile))
+ipcMain.handle('hermes:inference-registry:list', async () => getHermesInferenceRegistry().list())
+ipcMain.handle('hermes:inference-registry:install', async (_event, manifestPath) =>
+  getHermesInferenceRegistry().installFromPath(manifestPath))
+ipcMain.handle('hermes:inference-registry:choose-manifest', async () => {
+  const result = await dialog.showOpenDialog({ properties: ['openFile'], filters: [{ name: 'JSON manifest', extensions: ['json'] }] })
+  return result.canceled ? null : result.filePaths[0]
+})
+ipcMain.handle('hermes:inference-registry:enable', async (_event, id, enabled) =>
+  getHermesInferenceRegistry().setEnabled(id, enabled))
+ipcMain.handle('hermes:inference-registry:select-adapter', async (_event, id) =>
+  getHermesInferenceRegistry().selectAdapter(id))
+ipcMain.handle('hermes:inference-registry:select-model', async (_event, adapterId, modelId) =>
+  getHermesInferenceRegistry().selectModel(adapterId, modelId))
+ipcMain.handle('hermes:inference-registry:active-route', async () =>
+  getHermesInferenceRegistry().activeRoute())
+ipcMain.handle('hermes:inference-registry:remove', async (_event, id) =>
+  getHermesInferenceRegistry().remove(id))
+ipcMain.handle('hermes:inference-registry:validate', async (_event, id, requested) =>
+  getHermesInferenceRegistry().validate(id, requested))
 // Reconnect-after-wake recovery. A REMOTE primary backend has no child process,
 // so the 'exit'/'error' handlers that would clear a dead connectionPromise never
 // fire — once the remote becomes unreachable across a sleep/wake the renderer
