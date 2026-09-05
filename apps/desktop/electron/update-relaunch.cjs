@@ -57,12 +57,17 @@ function unpackedDirName(platform) {
  */
 function resolveUnpackedRelease(execPath, updateRoot, platform) {
   if (!execPath || !updateRoot) return null
-  const releaseDir = path.join(updateRoot, 'apps', 'desktop', 'release')
-  const unpacked = path.join(releaseDir, unpackedDirName(platform))
-  const normalizedExec = path.resolve(String(execPath))
+  // Use the target platform's path rules, while preserving Windows-style
+  // fixture paths when POSIX cases are exercised from a Windows checkout.
+  const windowsPath = platform === 'win32' || /[\\]/.test(`${execPath}${updateRoot}`)
+  const pathApi = windowsPath ? path.win32 : path.posix
+  const releaseDir = pathApi.join(updateRoot, 'apps', 'desktop', 'release')
+  const unpacked = pathApi.join(releaseDir, unpackedDirName(platform))
+  const normalizedExec = pathApi.resolve(String(execPath))
+  const normalizedUnpacked = pathApi.resolve(unpacked)
   // execPath must be the unpacked dir itself or a descendant of it.
-  const withSep = unpacked.endsWith(path.sep) ? unpacked : unpacked + path.sep
-  if (normalizedExec === unpacked || normalizedExec.startsWith(withSep)) {
+  const withSep = normalizedUnpacked.endsWith(pathApi.sep) ? normalizedUnpacked : normalizedUnpacked + pathApi.sep
+  if (normalizedExec === normalizedUnpacked || normalizedExec.startsWith(withSep)) {
     return unpacked
   }
   return null
