@@ -5,11 +5,11 @@ desktop and portable builds.
 
 ## Release status
 
-**No binary release is published yet.** The repository is intentionally source
-and catalog only until a clean staged payload passes the one-click acceptance
-gate in `docs/ABUZ8_BUILD_AND_RELEASE.md`.
+**Windows acceptance prerelease published:** [Hermes
+0.17.0](https://github.com/abuz8studios-ship-it/abuz8-hermes-bundles/releases/tag/v0.17.0-abuz8-win1).
+It is a Windows x64 NSIS installer with no embedded model weights.
 
-## Source-backed candidate (not released)
+## Source-backed candidate
 
 | Label | Provider base | Bundle location | Runtime |
 | --- | --- | --- | --- |
@@ -18,18 +18,19 @@ gate in `docs/ABUZ8_BUILD_AND_RELEASE.md`.
 The portable Hermes and self-extracting model payloads are deliberately excluded
 from publication. They embed trial model runtimes and/or hand off to a terminal.
 
-The path above is the owner-machine source used for staging. It is not a
-downloadable release until a clean profile is generated and the acceptance gate
-passes.
+The path above is the owner-machine source used for staging. The published
+prerelease was built from this source after a clean isolated install and native
+window smoke test.
 
 ## Product contract
 
 The GUI-complete source candidate is the Electron build at
-`G:\Hermes\win-unpacked\Hermes.exe`. It is not released yet: it needs a clean
-staged profile and a clean-machine first-run smoke test.
+`apps/desktop/release/win-unpacked`. The release artifact is the NSIS installer
+linked above; it launches the native desktop UI and keeps user state outside
+the installed resources directory.
 
-The Hermes Portable launcher is excluded because it calls `hermes.exe chat` in a
-terminal after starting its local brain.
+The Hermes Portable launcher remains excluded because it calls `hermes.exe chat`
+in a terminal after starting its local brain.
 
 Each finished Windows release is intended to be:
 
@@ -46,11 +47,12 @@ They belong in versioned GitHub Release assets or a separate private delivery
 channel. Never commit `%LOCALAPPDATA%\hermes`, `state.db`, token files, or user
 configuration.
 
-## Current gaps
+## Remaining acceptance scope
 
-The Hermes Desktop candidate needs a clean-profile rebuild and a clean-machine
-test covering onboarding, provider/model selection, memory persistence, tools,
-skills, voice/vision settings, GPU allocation, and upstream update controls.
+The prerelease has passed clean installation and native-window smoke testing.
+Before calling it stable, the remaining acceptance pass must cover onboarding,
+provider/model selection, memory persistence, tools, skills, voice/vision
+settings, GPU allocation, and upstream update controls.
 
 Hermes Agent remains available under its upstream MIT license. The ABUZ8 desktop
 packaging, branding, and integration work are separate from the upstream project.
