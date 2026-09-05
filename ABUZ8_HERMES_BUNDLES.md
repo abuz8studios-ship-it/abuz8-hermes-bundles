@@ -3,7 +3,13 @@
 This fork is the public source and bundle catalog for ABUZ8's click-to-run Hermes
 desktop and portable builds.
 
-## Verified Windows bundles
+## Release status
+
+**No binary release is published yet.** The repository is intentionally source
+and catalog only until a clean staged payload passes the one-click acceptance
+gate in `docs/ABUZ8_BUILD_AND_RELEASE.md`.
+
+## Verified Windows bundle sources
 
 | Label | Provider base | Bundle location | Runtime |
 | --- | --- | --- | --- |
@@ -17,10 +23,12 @@ bundles. They are not required at runtime after a release package is assembled.
 
 ## Product contract
 
-The GUI-complete release currently verified is the Electron build at
-`G:\Hermes\win-unpacked\Hermes.exe`. The `Hermes Portable` launcher is
-functional but currently opens `hermes.exe chat` in a terminal after starting
-its local brain; it does not yet meet the no-terminal desktop requirement.
+The GUI-complete source candidate is the Electron build at
+`G:\Hermes\win-unpacked\Hermes.exe`. It is not released yet: it needs a clean
+staged profile and a clean-machine first-run smoke test.
+
+The Hermes Portable launcher is excluded because it calls `hermes.exe chat` in a
+terminal after starting its local brain.
 
 Each finished Windows release is intended to be:
 
@@ -37,11 +45,15 @@ They belong in versioned GitHub Release assets or a separate private delivery
 channel. Never commit `%LOCALAPPDATA%\hermes`, `state.db`, token files, or user
 configuration.
 
-## Current gap
+## Current gaps
 
 The portable Hermes launcher still calls `runtime\python\Scripts\hermes.exe
 chat`. It must be replaced by, or chained into, the bundled Electron desktop
-shell before that build is advertised as a GUI-only release.
+shell before that build is eligible.
+
+The Hermes Desktop candidate needs a clean-profile rebuild and a clean-machine
+test covering onboarding, provider/model selection, memory persistence, tools,
+skills, voice/vision settings, GPU allocation, and upstream update controls.
 
 Hermes Agent remains available under its upstream MIT license. The ABUZ8 desktop
 packaging, branding, and integration work are separate from the upstream project.
