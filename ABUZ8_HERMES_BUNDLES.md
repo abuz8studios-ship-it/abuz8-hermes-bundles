@@ -9,17 +9,18 @@ desktop and portable builds.
 and catalog only until a clean staged payload passes the one-click acceptance
 gate in `docs/ABUZ8_BUILD_AND_RELEASE.md`.
 
-## Verified Windows bundle sources
+## Source-backed candidate (not released)
 
 | Label | Provider base | Bundle location | Runtime |
 | --- | --- | --- | --- |
-| Hermes Desktop | NousResearch Hermes Agent | `G:\Hermes\hermes-agent\apps\desktop` | Native Electron desktop with managed Hermes backend and onboarding |
-| Hermes Portable | Hermes Agent v0.17.0 | `G:\ABUZ8-Agents\Hermes-Portable` | Embedded runtime, local brain, portable config and memory |
-| Hermes Portable (E:) | ABUZ8 packaging copy | `E:\ABU\02_PACKAGING\portable-agents` | Self-extracting Windows package with embedded runtime |
-| Hermes Desktop Source | ABUZ8 Hermes checkout | `C:\Users\wirec\GH_OPS\repos\hermes-agent` | Public fork checkout with desktop application, gateway, and test suite |
+| Hermes Desktop | NousResearch Hermes Agent | `C:\Users\wirec\GH_OPS\repos\hermes-agent\apps\desktop` | Native Electron desktop with managed backend, onboarding, model controls, and update paths |
 
-The paths above are the verified owner-machine locations used to build and test the
-bundles. They are not required at runtime after a release package is assembled.
+The portable Hermes and self-extracting model payloads are deliberately excluded
+from publication. They embed trial model runtimes and/or hand off to a terminal.
+
+The path above is the owner-machine source used for staging. It is not a
+downloadable release until a clean profile is generated and the acceptance gate
+passes.
 
 ## Product contract
 
@@ -46,10 +47,6 @@ channel. Never commit `%LOCALAPPDATA%\hermes`, `state.db`, token files, or user
 configuration.
 
 ## Current gaps
-
-The portable Hermes launcher still calls `runtime\python\Scripts\hermes.exe
-chat`. It must be replaced by, or chained into, the bundled Electron desktop
-shell before that build is eligible.
 
 The Hermes Desktop candidate needs a clean-profile rebuild and a clean-machine
 test covering onboarding, provider/model selection, memory persistence, tools,
