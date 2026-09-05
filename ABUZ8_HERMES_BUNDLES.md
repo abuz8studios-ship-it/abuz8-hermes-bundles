@@ -17,7 +17,12 @@ bundles. They are not required at runtime after a release package is assembled.
 
 ## Product contract
 
-Each published Windows release is intended to be:
+The GUI-complete release currently verified is the Electron build at
+`G:\Hermes\win-unpacked\Hermes.exe`. The `Hermes Portable` launcher is
+functional but currently opens `hermes.exe chat` in a terminal after starting
+its local brain; it does not yet meet the no-terminal desktop requirement.
+
+Each finished Windows release is intended to be:
 
 - launched by double-clicking one installer or portable executable;
 - self-contained, with its own runtime, backend, frontend, and isolated state;
@@ -31,6 +36,12 @@ tokens, `.env` files, and local databases are intentionally excluded from Git.
 They belong in versioned GitHub Release assets or a separate private delivery
 channel. Never commit `%LOCALAPPDATA%\hermes`, `state.db`, token files, or user
 configuration.
+
+## Current gap
+
+The portable Hermes launcher still calls `runtime\python\Scripts\hermes.exe
+chat`. It must be replaced by, or chained into, the bundled Electron desktop
+shell before that build is advertised as a GUI-only release.
 
 Hermes Agent remains available under its upstream MIT license. The ABUZ8 desktop
 packaging, branding, and integration work are separate from the upstream project.
